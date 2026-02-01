@@ -1,0 +1,215 @@
+/* login */
+/* LOGIN PAGE STYLES */
+body {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	background: white !important;
+}
+
+.card {
+	display: flex;
+	width: 100%;
+	max-width: 900px;
+	background: white !important;
+	border-radius: 12px;
+	overflow: hidden;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.left {
+	flex: 1;
+	padding: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #ffffff !important;
+	background-image: none !important;
+	background-color: #ffffff !important;
+}
+
+.left::before,
+.left::after {
+	display: none !important;
+}
+
+.illustration {
+	width: 100%;
+	max-width: 400px;
+	height: auto;
+	object-fit: contain;
+}
+
+.right {
+	flex: 1;
+	padding: 60px 40px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	background: white !important;
+}
+
+.right h1 {
+	font-size: 32px;
+	font-weight: 700;
+	color: #1a202c;
+	margin-bottom: 12px;
+}
+
+.muted {
+	font-size: 14px;
+	color: #9ca3af;
+	margin-bottom: 32px;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.form-group {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.form-group input {
+	width: 100%;
+	padding: 12px 16px 12px 40px;
+	border: 1px solid #e5e7eb;
+	border-radius: 6px;
+	font-size: 14px;
+	transition: all 0.3s ease;
+	background: white;
+}
+
+.form-group input:focus {
+	outline: none;
+	border-color: #667eea;
+	box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group input::placeholder {
+	color: #d1d5db;
+}
+
+.form-group .icon {
+	position: absolute;
+	left: 12px;
+	width: 18px;
+	height: 18px;
+	color: #9ca3af;
+	pointer-events: none;
+}
+
+.divider {
+	height: 1px;
+	background: #e5e7eb;
+	margin: 24px 0;
+}
+
+.forgot {
+	text-align: center;
+	color: #667eea;
+	text-decoration: none;
+	font-size: 14px;
+	font-weight: 500;
+	transition: color 0.3s ease;
+}
+
+.forgot:hover {
+	color: #764ba2;
+	text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+	.left {
+		display: none;
+	}
+	.card {
+		max-width: 100%;
+	}
+	.right {
+		padding: 40px 30px;
+	}
+	.right h1 {
+		font-size: 24px;
+	}
+}
+
+/* Ensure form-row columns align correctly */
+.form-row .form-group { margin-bottom: 0; }
+
+.small-link {
+	display: block;
+	margin-top: 18px;
+	color: #52606d;
+	text-decoration: underline;
+	font-size: 13px;
+}
+
+@media (max-width: 820px) {
+	.card {
+		flex-direction: column;
+	}
+	.right {
+		width: 100%;
+		max-width: 100%;
+		padding: 28px;
+	}
+	.left {
+		padding: 28px;
+	}
+}
+
+/* Register-specific layout helpers */
+.form-row {
+	display: flex;
+	gap: 18px;
+	align-items: center;
+	margin-bottom: 12px;
+}
+
+.form-row .col {
+	flex: 1;
+}
+
+.btn--center {
+	display: block;
+	margin: 18px auto 0;
+	padding: 10px 30px;
+	background: #1976d2;
+	color: #fff;
+	border: none;
+	border-radius: 6px;
+	font-weight: 600;
+	font-size: 1rem;
+	cursor: pointer;
+	transition: background 0.2s;
+}
+.btn--center:hover, .btn--center:focus {
+	background: #1251a3;
+	color: #fff;
+}
+
+.divider {
+	margin: 20px auto;
+	border-top: 1px solid #eef2f6;
+	width: 80%;
+}
+
+.forgot {
+	text-align: center;
+	color: #6b7280;
+	font-size: 13px;
+	text-decoration: none;
+	display: block;
+	margin-top: 12px;
+	margin-bottom: 6px;
+}
+
+@media (max-width: 600px) {
+	.form-row { flex-direction: column; }
+}

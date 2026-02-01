@@ -1,0 +1,187 @@
+/* owner.css - Custom style for owner laporan page */
+.laporan-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+.laporan-header .icon {
+    font-size: 2rem;
+    margin-right: 0.5rem;
+    color: #1976d2;
+}
+.laporan-title {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #222;
+}
+/* Grid satu kolom agar semua card sama lebar */
+/* Grid 2 card kiri, 1 filter kanan, card biru full bawah */
+/* Grid satu baris card full desktop */
+.laporan-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+/* Semua card sama besar */
+.laporan-card {
+    flex: 1 1 0;
+    min-width: 0;
+    border-radius: 16px;
+    padding: 1.5rem 2rem 1.2rem 2rem;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    height: 170px;
+}
+.laporan-card.green {
+    background: #2ecc40;
+}
+.laporan-card.purple {
+    background: #8e44ad;
+}
+.laporan-card.blue {
+    background: #2980b9;
+}
+.laporan-card h3 {
+    font-size: 2.1rem;
+    font-weight: 700;
+    margin: 0.5rem 0 0.2rem 0;
+}
+.laporan-card small {
+    font-size: 1rem;
+    font-weight: 600;
+    opacity: 0.9;
+}
+.laporan-card p {
+    font-size: 1.1rem;
+    margin: 0.5rem 0 0 0;
+    opacity: 0.95;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.laporan-card .icon-card {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    font-size: 2.2rem;
+    opacity: 0.18;
+}
+.laporan-filter {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    padding: 1.3rem 2.2rem 1.3rem 2.2rem;
+    min-width: 320px;
+    max-width: 420px;
+    width: 100%;
+    margin-left: auto;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    word-break: break-word;
+    box-sizing: border-box;
+    height: auto;
+}
+.laporan-filter h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #1976d2;
+}
+.laporan-filter label {
+    font-size: 0.98rem;
+    font-weight: 500;
+    margin-top: 0.7rem;
+    margin-bottom: 0.2rem;
+    display: block;
+}
+.laporan-filter input[type="date"] {
+    width: 100%;
+    padding: 0.5rem 0.7rem;
+    border-radius: 6px;
+    border: 1px solid #cfd8dc;
+    margin-bottom: 0.7rem;
+    font-size: 1rem;
+}
+.laporan-filter button {
+    width: 100%;
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.7rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 0.7rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.laporan-filter button:hover {
+    background: #125ea2;
+}
+.laporan-bulanan {
+    background: #2980b9;
+    color: #fff;
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    margin-top: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.laporan-bulanan h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+.laporan-bulanan h2 {
+    font-size: 2.1rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+.laporan-bulanan p {
+    font-size: 1rem;
+    opacity: 0.95;
+}
+.laporan-note {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+}
+.laporan-note .icon {
+    font-size: 1.3rem;
+    margin-top: 0.1rem;
+}
+@media (max-width: 900px) {
+    .laporan-grid {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .laporan-filter {
+        margin-left: 0;
+        max-width: 100%;
+        height: auto;
+    }
+    .laporan-card, .laporan-card.blue {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        height: auto;
+    }
+}

@@ -1,0 +1,77 @@
+@media print, screen {
+body {
+    background: #fff !important;
+    margin: 0;
+    padding: 0;
+    font-family: 'Courier New', Courier, monospace;
+    color: #222;
+}
+.struk-print {
+    max-width: 340px;
+    margin: 32px auto 0 auto;
+    padding: 24px 18px 18px 18px;
+    border: 1px solid #eee;
+    background: #fcfcfc;
+}
+.struk-print .judul {
+    font-size: 1.1em;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 0.2em;
+    letter-spacing: 1px;
+    font-family: 'Courier New', Courier, monospace;
+}
+.struk-print .alamat {
+    text-align: center;
+    font-size: 0.95em;
+    margin-bottom: 0.7em;
+}
+.struk-print .garis {
+    border: none;
+    border-top: 2px dotted #888;
+    margin: 0.7em 0 0.7em 0;
+}
+.struk-print .data {
+    font-size: 0.97em;
+    margin-bottom: 0.7em;
+    font-family: 'Courier New', Courier, monospace;
+}
+.struk-print .data td {
+    padding: 0.1em 0.3em 0.1em 0;
+}
+.struk-print .total {
+    font-size: 1em;
+    font-weight: bold;
+    margin: 1em 0 0.7em 0;
+    font-family: 'Courier New', Courier, monospace;
+}
+.struk-print .total span {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #222;
+}
+.struk-print .footer {
+    text-align: center;
+    font-size: 0.95em;
+    margin-top: 1.2em;
+    font-family: 'Courier New', Courier, monospace;
+}
+}
+@media screen {
+body {
+    background: #e9ecef;
+}
+.struk-print {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-radius: 8px;
+}
+}
+@media print {
+.struk-print {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    padding: 0 !important;
+    margin-top: 0 !important;
+}
+}

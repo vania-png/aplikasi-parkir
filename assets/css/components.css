@@ -1,0 +1,142 @@
+/* btn, card, table, badge */
+
+/* CARD */
+.card {
+	background: white;
+	border-radius: 8px;
+	padding: 24px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	transition: all 0.3s ease;
+	border: 1px solid #f0f0f0;
+}
+
+.card:hover {
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+	transform: translateY(-2px);
+}
+
+/* CARD ICON */
+.card-icon {
+	font-size: 40px;
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* CARD CONTENT */
+.card-content {
+	flex: 1;
+}
+
+/* CARD LABEL */
+.card-label {
+	font-size: 12px;
+	color: #9ca3af;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	margin-bottom: 8px;
+	font-weight: 600;
+}
+
+/* CARD VALUE */
+.card-value {
+	font-size: 32px;
+	font-weight: 700;
+	color: #1a202c;
+	margin: 0;
+}
+
+/* BUTTON */
+.btn {
+	padding: 12px 20px;
+	border: none;
+	border-radius: 6px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	margin-top: 8px;
+	display: inline-block;
+	background: #4169E1;
+	color: #ffffff;
+}
+
+.btn:hover,
+.btn:focus {
+	filter: brightness(0.95);
+}
+
+.btn--center {
+	display: block;
+	margin: 18px auto 0;
+	padding: 10px 30px;
+	color: white;
+}
+
+.btn--center:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+}
+
+.btn--center:active {
+	transform: translateY(0);
+}
+
+/* BADGE (contoh) */
+.badge {
+	display: inline-block;
+	padding: 4px 10px;
+	border-radius: 8px;
+	font-size: 12px;
+	font-weight: 600;
+	background: #e5e7eb;
+	color: #374151;
+}
+
+/* TABLE (contoh) */
+.table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 14px;
+}
+
+.table thead {
+	background-color: #f3f4f6;
+}
+
+.table thead th {
+	padding: 14px 20px;
+	text-align: left;
+	font-weight: 600;
+	color: #6b7280;
+	font-size: 13px;
+	border-bottom: 1px solid #d1d5db;
+	border-right: 1px solid #e5e7eb;
+}
+
+.table thead th:last-child {
+	border-right: none;
+}
+
+.table tbody td {
+	padding: 14px 20px;
+	border-bottom: 1px solid #e5e7eb;
+	border-right: 1px solid #e5e7eb;
+	color: #6b7280;
+}
+
+.table tbody td:last-child {
+	border-right: none;
+}
+
+.table tbody tr:last-child td {
+	border-bottom: none;
+}
+
+.table tbody tr:hover {
+	background-color: #f9fafb;
+}
