@@ -30,4 +30,14 @@ class Tarif_model extends CI_Model {
     {
         return $this->db->where('id_tarif', $id)->delete($this->table);
     }
+
+    public function get_jenis_kendaraan()
+    {
+        $result = $this->db->select('jenis_kendaraan')
+                           ->distinct()
+                           ->order_by('jenis_kendaraan', 'ASC')
+                           ->get($this->table)
+                           ->result();
+        return $result;
+    }
 }

@@ -1,0 +1,22 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /aplikasi_parkir/
+
+    # Redirect www to non-www
+    RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+    RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
+
+    # Protect application and system files from being viewed
+    RewriteRule ^(application|system) - [F,L]
+
+    # Allow these directories and files to be displayed directly:
+    RewriteCond $1 ^(index\.php|robots\.txt|sitemap\.xml)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php/$1 [L]
+
+    # Deny access to htaccess file
+    <Files .htaccess>
+        Deny from all
+    </Files>
+</IfModule>

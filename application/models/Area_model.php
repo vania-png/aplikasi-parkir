@@ -5,16 +5,42 @@ class Area_model extends CI_Model
 {
     private $table = 'tb_area_parkir';
 
-    // Ambil semua data
+    // Ambil semua data dengan perhitungan terisi otomatis
     public function getAll()
     {
-        return $this->db->get($this->table)->result();
+        $areas = $this->db->get($this->table)->result();
+        
+        // Hitung terisi untuk setiap area berdasarkan transaksi aktif
+        foreach ($areas as $area) {
+            $terisi = $this->hitung_terisi($area->id_area);
+            $area->terisi = $terisi;
+            $area->sisa = $area->kapasitas - $terisi;
+        }
+        
+        return $areas;
     }
 
-    // Ambil data berdasarkan ID
+    // Ambil data berdasarkan ID dengan perhitungan terisi otomatis
     public function getById($id)
     {
-        return $this->db->get_where($this->table, ['id_area' => $id])->row();
+        $area = $this->db->get_where($this->table, ['id_area' => $id])->row();
+        
+        if ($area) {
+            $terisi = $this->hitung_terisi($area->id_area);
+            $area->terisi = $terisi;
+            $area->sisa = $area->kapasitas - $terisi;
+        }
+        
+        return $area;
+    }
+
+    // Hitung jumlah kendaraan yang sedang parkir (belum keluar) di area tertentu
+    public function hitung_terisi($id_area)
+    {
+        $this->db->from('tb_parkir');
+        $this->db->where('id_area', $id_area);
+        $this->db->where('waktu_keluar IS NULL', null, false);
+        return $this->db->count_all_results();
     }
 
     // Insert data
@@ -40,9 +66,12 @@ class Area_model extends CI_Model
     // Hitung total slot tersedia
     public function get_total_slot_tersedia()
     {
-        $this->db->select('SUM(kapasitas - terisi) as total_slot');
-        $result = $this->db->get($this->table)->row();
-        return $result->total_slot ?? 0;
+        $areas = $this->getAll();
+        $total = 0;
+        foreach ($areas as $area) {
+            $total += $area->sisa;
+        }
+        return $total;
     }
 }
 

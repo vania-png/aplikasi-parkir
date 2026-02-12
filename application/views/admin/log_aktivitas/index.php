@@ -27,7 +27,7 @@
                         <td><?= $no++ ?></td>
                         <td><?= $l->nama_lengkap ?? '-' ?></td>
                         <td><?= $l->aktivitas ?></td>
-                        <td><?= $l->waktu_aktivitas ?></td>
+                        <td><?= date('d/m/Y H:i:s', strtotime($l->waktu_aktivitas)) ?></td>
                     </tr>
                     <?php endforeach; ?>
                     <?php endif; ?>

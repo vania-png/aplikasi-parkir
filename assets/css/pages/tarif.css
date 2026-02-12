@@ -47,6 +47,40 @@
     margin: 0;
 }
 
+/* Button Styles */
+.btn,
+.btn-primary {
+    padding: 12px 20px !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    background-color: #1976d2 !important;
+    color: white !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    text-decoration: none !important;
+}
+
+.btn:hover,
+.btn-primary:hover {
+    background-color: #1565c0 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.35) !important;
+}
+
+.btn-secondary {
+    background-color: #757575 !important;
+    color: white !important;
+}
+
+.btn-secondary:hover {
+    background-color: #616161 !important;
+}
+
 /* Action Buttons */
 .action-btn {
     display: inline-flex;

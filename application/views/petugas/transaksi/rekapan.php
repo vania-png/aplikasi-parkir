@@ -8,9 +8,6 @@
                 <span style="font-weight: 700;">History Transaksi</span>
             </div>
         </div>
-        <div style="margin-left: auto;">
-            <a href="<?= base_url('index.php/petugas/dashboard') ?>" class="btn" style="background: #f5f5f5; color: #222; border: 1px solid #bbb; border-radius: 6px; padding: 0.5em 1.2em; font-size: 1em; text-decoration: none;">&larr; Kembali</a>
-        </div>
     </div>
     <div style="padding: 0 2rem;">
         <div style="display: flex; gap: 1.5rem; margin-bottom: 1.2rem;">
@@ -24,7 +21,23 @@
             </div>
             <div style="flex:1; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); padding: 1.2rem; text-align: center;">
                 <div style="font-size: 1.1rem; color: #888;">Pendapatan Hari Ini</div>
-                <div style="font-size: 2.1rem; font-weight: 700; color: #1976d2; margin-top: 0.2rem;">Rp <?= number_format($pendapatan_hari_ini ?? 0,0,',','.') ?></div>
+                <?php
+                // Hitung pendapatan hanya dari transaksi yang keluar pada hari ini
+                $pendapatan_today = 0;
+                $today = date('Y-m-d');
+                if (!empty($transaksi_list) && is_array($transaksi_list)) {
+                    foreach ($transaksi_list as $tt) {
+                        // Pastikan ada waktu keluar dan biaya
+                        if (!empty($tt['waktu_keluar'])) {
+                            $wkel = date('Y-m-d', strtotime($tt['waktu_keluar']));
+                            if ($wkel === $today) {
+                                $pendapatan_today += isset($tt['biaya_total']) ? floatval($tt['biaya_total']) : 0;
+                            }
+                        }
+                    }
+                }
+                ?>
+                <div style="font-size: 2.1rem; font-weight: 700; color: #1976d2; margin-top: 0.2rem;">Rp <?= number_format($pendapatan_today,0,',','.') ?></div>
             </div>
         </div>
         <form style="display: flex; gap: 1.2rem; align-items: center; margin-bottom: 1.2rem;">

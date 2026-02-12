@@ -23,4 +23,12 @@ class Kendaraan_model extends CI_Model {
     public function delete($id) {
         return $this->db->delete($this->table, ['id_kendaraan' => $id]);
     }
+
+    public function cek_plat_ada($plat_nomor, $exclude_id = null) {
+        $this->db->where('plat_nomor', $plat_nomor);
+        if ($exclude_id) {
+            $this->db->where('id_kendaraan !=', $exclude_id);
+        }
+        return $this->db->get($this->table)->row();
+    }
 }

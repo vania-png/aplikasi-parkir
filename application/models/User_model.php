@@ -29,4 +29,22 @@ class User_model extends CI_Model {
     {
         return $this->db->where('id_user', $id)->delete($this->table);
     }
+
+    public function cek_email_ada($email, $exclude_id = null)
+    {
+        $this->db->where('email', $email);
+        if ($exclude_id) {
+            $this->db->where('id_user !=', $exclude_id);
+        }
+        return $this->db->get($this->table)->row();
+    }
+
+    public function cek_username_ada($username, $exclude_id = null)
+    {
+        $this->db->where('username', $username);
+        if ($exclude_id) {
+            $this->db->where('id_user !=', $exclude_id);
+        }
+        return $this->db->get($this->table)->row();
+    }
 }

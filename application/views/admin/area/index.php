@@ -19,7 +19,7 @@
 
     <div class="card">
         <div class="card-header">
-            <a href="<?= base_url('index.php/admin/area/tambah') ?>" class="btn btn-primary">
+            <a href="<?= base_url('index.php/admin/area/tambah') ?>" class="btn btn-primary" style="background-color: #1976d2 !important; color: white !important;">
                 + Tambah Area
             </a>
         </div>
@@ -30,7 +30,6 @@
                         <th>No</th>
                         <th>Nama Area</th>
                         <th>Kapasitas</th>
-                        <th>Terisi</th>
                         <th>Sisa Slot</th>
                         <th>Aksi</th>
                     </tr>
@@ -38,7 +37,7 @@
                 <tbody>
                     <?php if (empty($area)): ?>
                     <tr>
-                        <td colspan="6" class="text-center text-muted">Belum ada data area parkir</td>
+                        <td colspan="5" class="text-center text-muted">Belum ada data area parkir</td>
                     </tr>
                     <?php else: ?>
                     <?php $no=1; foreach($area as $a): ?>
@@ -46,8 +45,7 @@
                         <td><?= $no++ ?></td>
                         <td><?= $a->nama_area ?></td>
                         <td><?= $a->kapasitas ?></td>
-                        <td><?= $a->terisi ?></td>
-                        <td><?= $a->kapasitas - $a->terisi ?></td>
+                        <td><?= $a->sisa ?></td>
                         <td class="text-center">
                             <a href="<?= base_url('index.php/admin/area/edit/'.$a->id_area) ?>" class="btn-icon btn-edit">✎</a>
                             <a href="<?= base_url('index.php/admin/area/hapus/'.$a->id_area) ?>"

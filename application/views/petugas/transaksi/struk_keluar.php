@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>E-PARKING SYSTEM - Struk Parkir</title>
     <link rel="stylesheet" href="<?= base_url('assets/css/pages/struk_print.css') ?>">
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 </head>
 <body onload="window.print()">
 <div class="struk-print">
@@ -28,9 +29,6 @@
         </tr>
         <tr>
             <td>Keluar</td><td>:</td><td><?= date('d/m/Y H:i', strtotime($transaksi->waktu_keluar ?: date('Y-m-d H:i:s'))) ?></td>
-        </tr>
-        <tr>
-            <td>Petugas</td><td>:</td><td><?= isset($transaksi->petugas) ? $transaksi->petugas : ($this->session->userdata('nama_lengkap') ?? '-') ?></td>
         </tr>
     </table>
     <hr class="garis">
@@ -70,10 +68,24 @@
             <td>Kembalian</td><td>:</td><td>Rp <?= number_format($kembalian,0,',','.') ?></td>
         </tr>
     </table>
+    <div class="barcode-container" style="text-align: center; margin: 10px 0;">
+        <svg id="barcode"></svg>
+    </div>
     <div class="footer">
         Terima Kasih Atas Kunjungan Anda<br>
         -- Simpan Struk Ini --
     </div>
 </div>
+<script>
+    var barcodeValue = "<?= $transaksi->nomor_karcis ?? $transaksi->id_parkir ?? '000000' ?>";
+    JsBarcode("#barcode", barcodeValue, {
+        format: "CODE128",
+        width: 2,
+        height: 40,
+        displayValue: true,
+        fontSize: 12,
+        margin: 0
+    });
+</script>
 </body>
 </html>

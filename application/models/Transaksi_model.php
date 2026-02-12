@@ -14,6 +14,11 @@ class Transaksi_model extends CI_Model {
         return $this->db->get('tb_area_parkir')->result();
     }
 
+    public function get_area_by_id($id)
+    {
+        return $this->db->get_where('tb_area_parkir', ['id_area' => $id])->row();
+    }
+
     public function get_tarif()
     {
         return $this->db->get('tb_tarif')->result();
@@ -28,11 +33,16 @@ class Transaksi_model extends CI_Model {
 
     public function get_by_id($id)
     {
-        $this->db->select('tb_parkir.*, tb_area_parkir.nama_area');
+        $this->db->select('tb_parkir.*, tb_area_parkir.nama_area, tb_tarif.tarif_per_jam');
         $this->db->from('tb_parkir');
         $this->db->join(
             'tb_area_parkir',
             'tb_area_parkir.id_area = tb_parkir.id_area',
+            'left'
+        );
+        $this->db->join(
+            'tb_tarif',
+            'tb_tarif.id_tarif = tb_parkir.id_tarif',
             'left'
         );
         $this->db->where('tb_parkir.id_parkir', $id);
@@ -95,13 +105,27 @@ class Transaksi_model extends CI_Model {
 
     public function get_transaksi_hari_ini()
     {
-        $this->db->select('tb_parkir.*, tb_area_parkir.nama_area, tb_tarif.jenis_kendaraan, tb_kendaraan.plat_nomor');
+        $this->db->select('tb_parkir.*, tb_area_parkir.nama_area, tb_tarif.jenis_kendaraan, tb_kendaraan.plat_nomor, tb_user.nama_lengkap as nama_petugas');
         $this->db->from('tb_parkir');
         $this->db->join('tb_area_parkir', 'tb_area_parkir.id_area = tb_parkir.id_area', 'left');
         $this->db->join('tb_tarif', 'tb_tarif.id_tarif = tb_parkir.id_tarif', 'left');
         $this->db->join('tb_kendaraan', 'tb_kendaraan.id_kendaraan = tb_parkir.id_kendaraan', 'left');
+        $this->db->join('tb_user', 'tb_user.id_user = tb_parkir.id_user', 'left');
         $this->db->where('DATE(waktu_masuk)', date('Y-m-d'));
         $this->db->order_by('waktu_masuk', 'DESC');
+        return $this->db->get()->result();
+    }
+
+    public function get_transaksi_keluar()
+    {
+        $this->db->select('tb_parkir.*, tb_area_parkir.nama_area, tb_tarif.jenis_kendaraan, tb_tarif.tarif_per_jam, tb_kendaraan.plat_nomor, tb_user.nama_lengkap as nama_petugas');
+        $this->db->from('tb_parkir');
+        $this->db->join('tb_area_parkir', 'tb_area_parkir.id_area = tb_parkir.id_area', 'left');
+        $this->db->join('tb_tarif', 'tb_tarif.id_tarif = tb_parkir.id_tarif', 'left');
+        $this->db->join('tb_kendaraan', 'tb_kendaraan.id_kendaraan = tb_parkir.id_kendaraan', 'left');
+        $this->db->join('tb_user', 'tb_user.id_user = tb_parkir.id_user', 'left');
+        $this->db->where('tb_parkir.waktu_keluar IS NOT NULL');
+        $this->db->order_by('tb_parkir.waktu_keluar', 'DESC');
         return $this->db->get()->result();
     }
 }

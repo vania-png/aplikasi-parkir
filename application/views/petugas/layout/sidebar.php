@@ -1,6 +1,6 @@
-<aside class="sidebar" style="background-color: #4f46e5 !important;">
+<aside class="sidebar" style="background-color: #1976d2 !important;">
     <!-- Logo dan Brand -->
-    <div class="sidebar-brand" style="background-color: #4f46e5 !important; color: white !important;">
+    <div class="sidebar-brand" style="background-color: #1976d2 !important; color: white !important;">
         <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 10px;">
             <path d="M5 17v2h14v-2H5zM4.1 14.1L3 15.2l1.4 1.4 1.1-1.1L4.1 14.1zM7 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-5-5h2V3h-2v4zm0 16h2v-4h-2v4z" fill="currentColor"/>
         </svg>
@@ -9,7 +9,7 @@
     <hr style="border: 1px solid #ffffff; width: 85%; margin: 0 auto;">
 
     <!-- Navigation Menu -->
-    <nav class="sidebar-menu" style="background-color: #4f46e5  !important; color: #1976d2 !important;">
+    <nav class="sidebar-menu" style="background-color: #1976d2  !important; color: #1976d2 !important;">
         <ul>
            <li>
                     <a href="<?= base_url('index.php/petugas/transaksi/data_parkir') ?>" class="menu-item <?= ($active == 'data') ? 'active' : '' ?>" style="color: #ffffff !important;">

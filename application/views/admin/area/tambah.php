@@ -24,16 +24,9 @@
                     </div>
                 </div>
 
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="terisi">Terisi</label>
-                        <input type="number" id="terisi" name="terisi" class="form-control" placeholder="Jumlah kendaraan saat ini" value="0" required>
-                    </div>
-                </div>
-
                 <div class="form-actions">
                     <a href="<?= base_url('index.php/admin/area') ?>" class="btn btn-secondary">← Kembali</a>
-                    <button type="submit" class="btn btn-primary">📍 Simpan Area</button>
+                    <button type="submit" class="btn btn-primary" style="background-color: #1976d2 !important; color: white !important;">📍 Simpan Area</button>
                 </div>
             </form>
         </div>

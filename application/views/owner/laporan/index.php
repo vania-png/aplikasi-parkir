@@ -85,7 +85,7 @@
                     if (!$ada_transaksi) {
                     ?>
                     <tr>
-                        <td colspan="6" style="padding: 2rem; text-align: center; color: #666;">Tidak ada transaksi hari ini.</td>
+                        <td colspan="7" style="padding: 2rem; text-align: center; color: #666;">Tidak ada transaksi hari ini.</td>
                     </tr>
                     <?php } ?>
                 </tbody>

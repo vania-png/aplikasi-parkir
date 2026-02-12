@@ -19,7 +19,7 @@
 
     <div class="card">
         <div class="card-header">
-            <a href="<?= base_url('index.php/admin/kendaraan/tambah') ?>" class="btn btn-primary">
+            <a href="<?= base_url('index.php/admin/kendaraan/tambah') ?>" class="btn btn-primary" style="background-color:#1976d2;color:#ffffff;border-color:transparent;">
                 + Tambah Kendaraan
             </a>
         </div>

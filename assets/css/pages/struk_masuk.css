@@ -1,0 +1,197 @@
+@media print, screen {
+    body {
+        background: #fff !important;
+        margin: 0;
+        padding: 0;
+        font-family: 'Courier New', Courier, monospace;
+        color: #222;
+    }
+    
+    .struk-masuk-container {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .struk-print {
+        max-width: 400px;
+        margin: 32px auto 0 auto;
+        padding: 24px 18px 18px 18px;
+        border: 1px solid #ddd;
+        background: #fcfcfc;
+    }
+    
+    .struk-print .header {
+        text-align: center;
+        margin-bottom: 1.2em;
+    }
+    
+    .struk-print .logo {
+        font-size: 1.3em;
+        font-weight: bold;
+        margin-bottom: 0.3em;
+    }
+    
+    .struk-print .judul {
+        font-size: 1.1em;
+        font-weight: bold;
+        text-align: center;
+        margin: 0.5em 0 0.2em 0;
+        letter-spacing: 1px;
+        font-family: 'Courier New', Courier, monospace;
+    }
+    
+    .struk-print .subtitle {
+        text-align: center;
+        font-size: 0.9em;
+        margin-bottom: 0.5em;
+        color: #666;
+    }
+    
+    .struk-print .alamat {
+        text-align: center;
+        font-size: 0.95em;
+        margin-bottom: 0.7em;
+        color: #777;
+    }
+    
+    .struk-print .garis {
+        border: none;
+        border-top: 1px dotted #999;
+        margin: 0.8em 0;
+    }
+    
+    .struk-print .data {
+        font-size: 0.98em;
+        margin-bottom: 0.8em;
+        font-family: 'Courier New', Courier, monospace;
+    }
+    
+    .struk-print .data tr {
+        height: 1.6em;
+    }
+    
+    .struk-print .data td {
+        padding: 0.2em 0.3em;
+        vertical-align: middle;
+    }
+    
+    .struk-print .data td:first-child {
+        font-weight: 600;
+        width: 45%;
+    }
+    
+    .struk-print .data td:nth-child(2) {
+        width: 5%;
+        text-align: center;
+    }
+    
+    .struk-print .data td:nth-child(3) {
+        text-align: left;
+        font-weight: 500;
+        color: #1565c0;
+    }
+    
+    .struk-print .highlight {
+        background-color: #fffde7;
+        border-left: 4px solid #fbc02d;
+        padding: 0.8em;
+        margin: 0.8em 0;
+        font-size: 0.9em;
+        color: #856404;
+    }
+    
+    .struk-print .footer {
+        text-align: center;
+        font-size: 0.95em;
+        margin-top: 1.2em;
+        font-family: 'Courier New', Courier, monospace;
+        color: #666;
+    }
+    
+    .button-group {
+        display: flex;
+        gap: 12px;
+        margin-top: 1.5em;
+        justify-content: center;
+    }
+    
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-close {
+        background-color: #e0e0e0;
+        color: #333;
+        border: 1px solid #bbb;
+    }
+    
+    .btn-close:hover {
+        background-color: #d0d0d0;
+    }
+    
+    .btn-print {
+        background-color: #1976d2;
+        color: #fff;
+        padding: 10px 24px;
+    }
+    
+    .btn-print:hover {
+        background-color: #1565c0;
+        box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+    }
+}
+
+@media screen {
+    body {
+        background: #e9ecef;
+    }
+    
+    .struk-masuk-container {
+        padding: 20px;
+    }
+    
+    .struk-print {
+        box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        border-radius: 8px;
+    }
+    
+    .button-group {
+        max-width: 400px;
+        margin: 1.5em auto 0 auto;
+    }
+}
+
+@media print {
+    body {
+        background: #fff !important;
+    }
+    
+    .struk-masuk-container {
+        padding: 0 !important;
+    }
+    
+    .struk-print {
+        max-width: 100% !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        background: #fff !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    .button-group {
+        display: none !important;
+    }
+    
+    .header-print-info {
+        display: none !important;
+    }
+}

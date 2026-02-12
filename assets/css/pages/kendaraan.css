@@ -398,3 +398,21 @@
 		justify-content: center;
 	}
 }
+
+/* Override: pastikan tombol primary pada halaman kendaraan berwarna #1976d2 */
+.page-wrapper .btn-primary,
+.card-header .btn-primary,
+.form-actions .btn-primary {
+	background-color: #1976d2 !important;
+	color: #ffffff !important;
+	box-shadow: 0 2px 8px rgba(25, 118, 210, 0.25) !important;
+	border-color: transparent !important;
+}
+
+.page-wrapper .btn-primary:hover,
+.card-header .btn-primary:hover,
+.form-actions .btn-primary:hover {
+	background-color: #1565c0 !important;
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(25, 118, 210, 0.35) !important;
+}

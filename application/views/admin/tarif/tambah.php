@@ -27,7 +27,7 @@
 
                 <div class="form-actions">
                     <a href="<?= site_url('admin/tarif') ?>" class="btn btn-secondary">← Kembali</a>
-                    <button type="submit" class="btn btn-primary">💾 Simpan Tarif</button>
+                    <button type="submit" class="btn btn-primary" style="background-color: #1976d2 !important; color: white !important;">💾 Simpan Tarif</button>
                 </div>
             </form>
         </div>

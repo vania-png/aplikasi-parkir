@@ -45,7 +45,7 @@ class Tarif extends CI_Controller {
 
         if ($this->Tarif_model->insert($data)) {
             $this->session->set_flashdata('success', 'Tarif berhasil ditambahkan');
-            $this->Log_model->simpan($this->session->userdata('id_user'), 'Menambah tarif: ' . $data['jenis_kendaraan']);
+            $this->Log_model->simpan($this->session->userdata('id_user'), 'Menambahkan Tarif: ' . $data['jenis_kendaraan'] . ' - Rp ' . number_format($data['tarif_per_jam'], 0, ',', '.') . '/jam');
         } else {
             $this->session->set_flashdata('error', 'Gagal menambahkan tarif');
         }
@@ -85,7 +85,7 @@ class Tarif extends CI_Controller {
 
         if ($this->Tarif_model->update($id, $data)) {
             $this->session->set_flashdata('success', 'Tarif berhasil diupdate');
-            $this->Log_model->simpan($this->session->userdata('id_user'), 'Mengedit tarif: ' . $data['jenis_kendaraan']);
+            $this->Log_model->simpan($this->session->userdata('id_user'), 'Mengubah Tarif: ' . $data['jenis_kendaraan'] . ' - Rp ' . number_format($data['tarif_per_jam'], 0, ',', '.') . '/jam');
         } else {
             $this->session->set_flashdata('error', 'Gagal mengupdate tarif');
         }
@@ -98,9 +98,13 @@ class Tarif extends CI_Controller {
             redirect(site_url('admin/tarif'));
         }
         
+        $tarif = $this->Tarif_model->get_by_id($id);
+        
         if ($this->Tarif_model->delete($id)) {
             $this->session->set_flashdata('success', 'Tarif berhasil dihapus');
-            $this->Log_model->simpan($this->session->userdata('id_user'), 'Menghapus tarif ID: ' . $id);
+            $jenis = $tarif ? $tarif->jenis_kendaraan : 'Unknown';
+            $harga = $tarif ? number_format($tarif->tarif_per_jam, 0, ',', '.') : 'Unknown';
+            $this->Log_model->simpan($this->session->userdata('id_user'), 'Menghapus Tarif: ' . $jenis . ' - Rp ' . $harga . '/jam');
         } else {
             $this->session->set_flashdata('error', 'Gagal menghapus tarif');
         }

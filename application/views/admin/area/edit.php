@@ -26,17 +26,9 @@
                     </div>
                 </div>
 
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="terisi">Terisi</label>
-                        <input type="number" id="terisi" name="terisi" class="form-control"
-                               value="<?= $area->terisi ?>" placeholder="Jumlah kendaraan saat ini" required>
-                    </div>
-                </div>
-
                 <div class="form-actions">
                     <a href="<?= base_url('index.php/admin/area') ?>" class="btn btn-secondary">← Kembali</a>
-                    <button type="submit" class="btn btn-primary">✏️ Update Area</button>
+                    <button type="submit" class="btn btn-primary" style="background-color: #1976d2 !important; color: white !important;">✏️ Update Area</button>
                 </div>
             </form>
         </div>

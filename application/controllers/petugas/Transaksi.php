@@ -7,6 +7,7 @@ class Transaksi extends CI_Controller {
     {
         parent::__construct();
         $this->load->model('Transaksi_model');
+        $this->load->model('Kendaraan_model');
         $this->load->library('session');
 
         if (!$this->session->userdata('id_user')) {
@@ -19,28 +20,27 @@ class Transaksi extends CI_Controller {
     // =========================
     public function index()
     {
-        $transaksi = $this->Transaksi_model->get_transaksi_hari_ini();
+        // Ambil SEMUA transaksi aktif (tidak peduli tanggalnya, selama belum keluar)
+        $transaksi_aktif = $this->Transaksi_model->get_transaksi_aktif();
 
-        // Hitung durasi dan biaya untuk transaksi aktif
-        foreach ($transaksi as $t) {
-            if ($t->status == 'aktif') {
-                $durasi = ceil((time() - strtotime($t->waktu_masuk)) / 3600);
-                if ($durasi < 1) $durasi = 1;
-                $tarif = $this->Transaksi_model->get_tarif_by_jenis($t->jenis_kendaraan);
-                if ($tarif) {
-                    $t->durasi_jam = $durasi;
-                    $t->biaya_total = $durasi * $tarif->tarif_per_jam;
-                } else {
-                    $t->durasi_jam = $durasi;
-                    $t->biaya_total = 0;
-                }
+        // Hitung durasi dan biaya untuk setiap transaksi aktif
+        foreach ($transaksi_aktif as $t) {
+            $durasi = ceil((time() - strtotime($t->waktu_masuk)) / 3600);
+            if ($durasi < 1) $durasi = 1;
+            $tarif = $this->Transaksi_model->get_tarif_by_jenis($t->jenis_kendaraan);
+            if ($tarif) {
+                $t->durasi_jam = $durasi;
+                $t->biaya_total = $durasi * $tarif->tarif_per_jam;
+            } else {
+                $t->durasi_jam = $durasi;
+                $t->biaya_total = 0;
             }
         }
 
-        $data['transaksi'] = $transaksi;
-        $data['total_transaksi_hari_ini'] = count($transaksi);
-        $data['total_aktif'] = count(array_filter($transaksi, function($t) { return $t->status == 'aktif'; }));
-        $data['total_pendapatan'] = array_sum(array_column($transaksi, 'biaya_total'));
+        $data['transaksi'] = $transaksi_aktif;
+        $data['total_transaksi_hari_ini'] = count($transaksi_aktif);
+        $data['total_aktif'] = count($transaksi_aktif);
+        $data['total_pendapatan'] = array_sum(array_column($transaksi_aktif, 'biaya_total'));
         $data['active'] = 'transaksi';
 
         $this->load->view('petugas/layout/header', [
@@ -58,10 +58,16 @@ class Transaksi extends CI_Controller {
     {
         $data['area']   = $this->Transaksi_model->get_area();
         $data['tarif']  = $this->Transaksi_model->get_tarif();
+        $data['kendaraan'] = $this->Kendaraan_model->get_all();
         $transaksi_aktif = $this->Transaksi_model->get_transaksi_aktif();
 
+        // Filter: Only include VALID active transactions (biaya > 0)
+        $transaksi_aktif_valid = array_filter($transaksi_aktif, function($t) {
+            return $t->biaya_total > 0;
+        });
+
         // Hitung durasi dan biaya estimasi untuk setiap transaksi aktif
-        foreach ($transaksi_aktif as $t) {
+        foreach ($transaksi_aktif_valid as $t) {
             $durasi = ceil((time() - strtotime($t->waktu_masuk)) / 3600);
             if ($durasi < 1) $durasi = 1;
             $tarif = $this->Transaksi_model->get_tarif_by_jenis($t->jenis_kendaraan);
@@ -69,7 +75,8 @@ class Transaksi extends CI_Controller {
             $t->biaya_estimasi = $durasi * $tarif->tarif_per_jam;
         }
 
-        $data['transaksi_aktif'] = $transaksi_aktif;
+        $data['transaksi_aktif'] = $transaksi_aktif_valid;
+        $data['plat_aktif'] = array_map(function($t) { return $t->no_polisi; }, $transaksi_aktif_valid);
         $data['active'] = 'data';
 
         $this->load->view('petugas/layout/header', [
@@ -81,30 +88,190 @@ class Transaksi extends CI_Controller {
     }
 
     // =========================
-    // SIMPAN TRANSAKSI
+    // STRUK MASUK (PREVIEW SEBELUM SIMPAN)
     // =========================
-    public function simpan()
+    public function struk_masuk()
     {
-        $jam_masuk  = $this->input->post('jam_masuk');
+        $no_polisi = $this->input->post('no_polisi');
+        
+        // Validasi: cek apakah plat nomor sudah ada di transaksi aktif
+        $transaksi_aktif = $this->Transaksi_model->get_transaksi_aktif();
+        foreach ($transaksi_aktif as $t) {
+            if ($t->no_polisi === $no_polisi) {
+                // Plat nomor sedang aktif
+                $this->session->set_flashdata('error', 'Plat nomor ' . $no_polisi . ' masih dalam transaksi aktif. Silakan selesaikan transaksi sebelumnya.');
+                redirect('petugas/transaksi/data_parkir');
+                return;
+            }
+        }
+        
+        $jenis_kendaraan = $this->input->post('jenis_kendaraan');
+        $jam_masuk = $this->input->post('jam_masuk');
+        $tanggal = $this->input->post('tanggal');
 
-        $tarif = $this->Transaksi_model->get_tarif_by_jenis(
-            $this->input->post('jenis_kendaraan')
-        );
+        $tarif = $this->Transaksi_model->get_tarif_by_jenis($jenis_kendaraan);
+        
+        // Validasi: tarif harus ada
+        if (!$tarif) {
+            $this->session->set_flashdata('error', 'Jenis kendaraan tidak ditemukan atau tidak memiliki tarif. Silakan hubungi admin.');
+            redirect('petugas/transaksi/data_parkir');
+            return;
+        }
 
+        // Simpan data ke session
+        $this->session->set_userdata('form_masuk', [
+            'no_polisi' => $no_polisi,
+            'jenis_kendaraan' => $jenis_kendaraan,
+            'id_area' => $this->input->post('area_id'),
+            'id_tarif' => $tarif->id_tarif,
+            'waktu_masuk' => $tanggal . ' ' . $jam_masuk,
+            'id_user' => $this->session->userdata('id_user'),
+            'tarif_per_jam' => $tarif->tarif_per_jam ?? 0,
+            'nama_area' => $this->Transaksi_model->get_area_by_id($this->input->post('area_id'))->nama_area ?? '-',
+            'tanggal' => $tanggal,
+            'jam_masuk' => $jam_masuk
+        ]);
+
+        // REDIRECT via GET untuk menghindari POST cache issue
+        redirect('petugas/transaksi/struk_masuk_preview');
+    }
+
+    // =========================
+    // TAMPILKAN PREVIEW STRUK MASUK (GET)
+    // =========================
+    public function struk_masuk_preview()
+    {
+        // Ambil data dari session
+        $form_data = $this->session->userdata('form_masuk');
+        
+        if (!$form_data) {
+            $this->session->set_flashdata('error', 'Session expired. Silakan input ulang.');
+            redirect('petugas/transaksi/data_parkir');
+            return;
+        }
+
+        // Siapkan data untuk ditampilkan di struk preview
+        $data['no_polisi'] = $form_data['no_polisi'];
+        $data['jenis_kendaraan'] = $form_data['jenis_kendaraan'];
+        $data['tanggal'] = $form_data['tanggal'];
+        $data['jam_masuk'] = $form_data['jam_masuk'];
+        $data['tarif_per_jam'] = $form_data['tarif_per_jam'];
+        $data['nama_area'] = $form_data['nama_area'];
+
+        $this->load->view('petugas/transaksi/struk_masuk', $data);
+    }
+
+    // =========================
+    // CETAK STRUK MASUK (HALAMAN PRINT)
+    // =========================
+    public function cetak_masuk()
+    {
+        // Ambil data dari session
+        $form_data = $this->session->userdata('form_masuk');
+        
+        if (!$form_data) {
+            echo json_encode(['status' => 'error', 'message' => 'Session expired']);
+            return;
+        }
+
+        // Simpan ke database sekarang
         $data = [
-            'no_polisi'       => $this->input->post('no_polisi'),
-            'jenis_kendaraan' => $this->input->post('jenis_kendaraan'),
-            'id_area'         => $this->input->post('area_id'),
-            'id_tarif'        => $tarif->id_tarif,
-            'waktu_masuk'     => $this->input->post('tanggal') . ' ' . $jam_masuk,
-            'waktu_keluar'    => NULL, // Parkir masuk, belum keluar
-            'durasi_jam'      => 0, // Belum ada durasi
-            'biaya_total'     => 0, // Belum ada biaya
-            'id_user'         => $this->session->userdata('id_user')
+            'no_polisi'       => $form_data['no_polisi'],
+            'jenis_kendaraan' => $form_data['jenis_kendaraan'],
+            'id_area'         => $form_data['id_area'],
+            'id_tarif'        => $form_data['id_tarif'],
+            'waktu_masuk'     => $form_data['waktu_masuk'],
+            'waktu_keluar'    => NULL,
+            'durasi_jam'      => 0,
+            'biaya_total'     => 0,
+            'id_user'         => $form_data['id_user']
         ];
 
         $id = $this->Transaksi_model->insert($data);
+        
+        // Simpan ID ke session untuk diakses di cetak_printed
+        $this->session->set_userdata('cetak_id', $id);
 
+        // Return JSON response (untuk AJAX)
+        echo json_encode(['status' => 'success', 'id' => $id]);
+    }
+
+    // =========================
+    // TAMPILKAN STRUK PRINT
+    // =========================
+    public function cetak_printed()
+    {
+        $id = $this->session->userdata('cetak_id');
+        
+        if (!$id) {
+            $this->session->set_flashdata('error', 'Session expired. Silakan input ulang.');
+            redirect('petugas/transaksi/data_parkir');
+            return;
+        }
+
+        // Ambil data yang baru saja disimpan
+        $transaksi = $this->Transaksi_model->get_by_id($id);
+        
+        if (!$transaksi) {
+            show_404();
+        }
+
+        $tarif = $this->Transaksi_model->get_tarif_by_jenis($transaksi->jenis_kendaraan);
+        
+        $data_struk['no_polisi'] = $transaksi->no_polisi;
+        $data_struk['jenis_kendaraan'] = $transaksi->jenis_kendaraan;
+        $data_struk['nama_area'] = $transaksi->nama_area ?? '-';
+        $data_struk['waktu_masuk'] = $transaksi->waktu_masuk;
+        $data_struk['tarif_per_jam'] = $tarif->tarif_per_jam ?? 0;
+
+        // Clear session
+        $this->session->unset_userdata('form_masuk');
+        $this->session->unset_userdata('cetak_id');
+
+        $this->load->view('petugas/transaksi/struk_masuk2', $data_struk);
+    }
+
+    // =========================
+    // BATAL CETAK STRUK MASUK
+    // =========================
+    public function batal_cetak()
+    {
+        // Clear session form dan cetak_id
+        $this->session->unset_userdata('form_masuk');
+        $this->session->unset_userdata('cetak_id');
+        
+        // Redirect ke data_parkir (clean GET request)
+        redirect('petugas/transaksi/data_parkir');
+    }
+    public function simpan()
+    {
+        // Ambil data dari session yang sudah divalidasi
+        $form_data = $this->session->userdata('form_masuk');
+        
+        if (!$form_data) {
+            $this->session->set_flashdata('error', 'Session expired. Silakan input ulang.');
+            redirect('petugas/transaksi/data_parkir');
+            return;
+        }
+
+        $data = [
+            'no_polisi'       => $form_data['no_polisi'],
+            'jenis_kendaraan' => $form_data['jenis_kendaraan'],
+            'id_area'         => $form_data['id_area'],
+            'id_tarif'        => $form_data['id_tarif'],
+            'waktu_masuk'     => $form_data['waktu_masuk'],
+            'waktu_keluar'    => NULL,
+            'durasi_jam'      => 0,
+            'biaya_total'     => 0,
+            'id_user'         => $form_data['id_user']
+        ];
+
+        $id = $this->Transaksi_model->insert($data);
+        
+        // Hapus session form
+        $this->session->unset_userdata('form_masuk');
+
+        $this->session->set_flashdata('success', 'Kendaraan berhasil dicatat masuk!');
         redirect(site_url('petugas/transaksi'));
     }
 
@@ -156,17 +323,17 @@ class Transaksi extends CI_Controller {
             show_404();
         }
 
-        // Hitung biaya sementara
+        // Hitung biaya sementara menggunakan tarif_per_jam dari transaksi (id_tarif)
         $waktu_sekarang = date('Y-m-d H:i:s');
         $durasi_jam = ceil((strtotime($waktu_sekarang) - strtotime($data['transaksi']->waktu_masuk)) / 3600);
         if ($durasi_jam < 1) $durasi_jam = 1;
 
-        $tarif = $this->Transaksi_model->get_tarif_by_jenis($data['transaksi']->jenis_kendaraan);
-        if ($tarif) {
-            $data['biaya_total'] = $durasi_jam * $tarif->tarif_per_jam;
-        } else {
-            $data['biaya_total'] = 0; // Default jika tarif tidak ditemukan
-        }
+        // Gunakan tarif_per_jam yang sudah dimuat dari JOIN dengan tb_tarif
+        $tarif_per_jam = $data['transaksi']->tarif_per_jam ?? 0;
+        
+        // Hitung total biaya berdasarkan durasi dan tarif per jam
+        $data['biaya_total'] = $durasi_jam * $tarif_per_jam;
+        $data['tarif_per_jam'] = $tarif_per_jam;
         $data['durasi_jam'] = $durasi_jam;
         $data['active'] = 'transaksi';
 
@@ -185,23 +352,22 @@ class Transaksi extends CI_Controller {
     {
         $id = $this->input->post('id_parkir');
         $uang_diberikan = $this->input->post('uang_diberikan');
+        $biaya_total = $this->input->post('biaya_total'); // Ambil dari form (hasil perhitungan di bayar page)
 
         $transaksi = $this->Transaksi_model->get_by_id($id);
         if (!$transaksi) {
             show_404();
         }
 
-        $waktu_keluar = date('Y-m-d H:i:s');
-        $durasi_jam = ceil((strtotime($waktu_keluar) - strtotime($transaksi->waktu_masuk)) / 3600);
-        if ($durasi_jam < 1) $durasi_jam = 1;
-
-        $tarif = $this->Transaksi_model->get_tarif_by_jenis($transaksi->jenis_kendaraan);
-        $biaya_total = $durasi_jam * $tarif->tarif_per_jam;
-
+        // Validasi: uang yang diberikan harus >= biaya total
         if ($uang_diberikan < $biaya_total) {
             $this->session->set_flashdata('error', 'Uang yang diberikan kurang!');
             redirect('petugas/transaksi/bayar/' . $id);
         }
+
+        $waktu_keluar = date('Y-m-d H:i:s');
+        $durasi_jam = ceil((strtotime($waktu_keluar) - strtotime($transaksi->waktu_masuk)) / 3600);
+        if ($durasi_jam < 1) $durasi_jam = 1;
 
         $kembalian = $uang_diberikan - $biaya_total;
 
@@ -220,6 +386,7 @@ class Transaksi extends CI_Controller {
         $this->session->set_flashdata('kembalian', $kembalian);
         $this->session->set_flashdata('uang_diberikan', $uang_diberikan);
 
+        // Redirect ke halaman struk_keluar
         redirect('petugas/transaksi/struk/' . $id);
     }
 
@@ -237,7 +404,7 @@ class Transaksi extends CI_Controller {
         $data['kembalian'] = $this->session->flashdata('kembalian');
         $data['uang_diberikan'] = $this->session->flashdata('uang_diberikan');
 
-        $this->load->view('petugas/transaksi/struk', $data);
+        $this->load->view('petugas/transaksi/struk_keluar', $data);
     }
 
     // =========================
@@ -251,20 +418,19 @@ class Transaksi extends CI_Controller {
 
         // Ambil data sesuai filter
         if ($status == 'Aktif') {
+            // Tampilkan SEMUA kendaraan aktif (waktu_keluar IS NULL)
             $transaksi = $this->Transaksi_model->get_transaksi_aktif();
         } elseif ($status == 'Keluar') {
-            $transaksi = array_filter($this->Transaksi_model->get_transaksi_hari_ini(), function($t) {
-                return $t->waktu_keluar;
-            });
+            // Tampilkan kendaraan yang sudah keluar (waktu_keluar IS NOT NULL) - ALL time, not just today
+            $transaksi = $this->Transaksi_model->get_transaksi_keluar();
         } else {
-            // Gabungkan kendaraan aktif dan keluar hari ini
+            // Gabungkan SEMUA kendaraan aktif dan yang sudah keluar (ALL time)
             $transaksi_aktif = $this->Transaksi_model->get_transaksi_aktif();
-            $transaksi_keluar = array_filter($this->Transaksi_model->get_transaksi_hari_ini(), function($t) {
-                return $t->waktu_keluar;
-            });
+            $transaksi_keluar = $this->Transaksi_model->get_transaksi_keluar();
             $transaksi = array_merge($transaksi_aktif, $transaksi_keluar);
         }
-        // Filter plat
+        
+        // Filter plat (jika ada pencarian)
         if ($cari_plat) {
             $transaksi = array_filter($transaksi, function($t) use ($cari_plat) {
                 $plat = $t->plat_nomor ?? $t->no_polisi ?? '';
@@ -272,9 +438,12 @@ class Transaksi extends CI_Controller {
             });
         }
 
-        $data['total_transaksi'] = $this->Transaksi_model->get_total_transaksi_hari_ini();
-        $data['transaksi_aktif'] = count($this->Transaksi_model->get_transaksi_aktif());
-        $data['pendapatan_hari_ini'] = $this->Transaksi_model->get_total_pendapatan_hari_ini();
+        // Hitung total transaksi dan pendapatan berdasarkan data yang ditampilkan (OTOMATIS)
+        $data['total_transaksi'] = count($transaksi); // Total dari data yang ditampilkan
+        $data['transaksi_aktif'] = count(array_filter($transaksi, function($t) {
+            return !$t->waktu_keluar; // Hitung yang masih aktif (belum keluar)
+        }));
+        $data['pendapatan_hari_ini'] = array_sum(array_column($transaksi, 'biaya_total')); // Sum biaya_total dari yang ditampilkan
         $data['jumlah_ditemukan'] = count($transaksi);
         $data['transaksi_list'] = array_map(function($t) {
             // Hitung durasi
@@ -307,4 +476,5 @@ class Transaksi extends CI_Controller {
         $this->load->view('petugas/transaksi/rekapan', $data);
         $this->load->view('petugas/layout/footer');
     }
+
 }

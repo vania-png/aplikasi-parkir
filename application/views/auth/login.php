@@ -83,9 +83,7 @@
                 <button class="btn btn--center" type="submit" style="background:#1976d2;color:#fff;border:none;border-radius:6px;font-weight:600;font-size:1rem;cursor:pointer;transition:background 0.2s;">Log in</button>
             </form>
 
-            <div class="divider"></div>
-            <a class="forgot" href="#">Forgot Password?</a>
-        </div>
+          </div>
     </div>
 </body>
 </html>

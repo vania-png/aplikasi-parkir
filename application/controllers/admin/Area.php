@@ -51,7 +51,7 @@ class Area extends CI_Controller
         ];
 
         $this->Area_model->insert($data);
-        $this->Log_model->simpan($this->session->userdata('id_user'), 'Menambah area: ' . $data['nama_area']);
+        $this->Log_model->simpan($this->session->userdata('id_user'), 'Menambahkan Area Parkir: ' . $data['nama_area'] . ' (Kapasitas: ' . $data['kapasitas'] . ')');
         redirect('admin/area');
     }
 
@@ -83,7 +83,7 @@ class Area extends CI_Controller
         ];
 
         $this->Area_model->update($id, $data);
-        $this->Log_model->simpan($this->session->userdata('id_user'), 'Mengedit area: ' . $data['nama_area']);
+        $this->Log_model->simpan($this->session->userdata('id_user'), 'Mengubah Area Parkir: ' . $data['nama_area'] . ' (Kapasitas: ' . $data['kapasitas'] . ')');
         redirect('admin/area');
     }
 
@@ -92,8 +92,11 @@ class Area extends CI_Controller
     // =====================
     public function hapus($id)
     {
+        $area = $this->Area_model->getById($id);
         $this->Area_model->delete($id);
-        $this->Log_model->simpan($this->session->userdata('id_user'), 'Menghapus area ID: ' . $id);
+        $nama = $area ? $area->nama_area : 'Unknown';
+        $kapasitas = $area ? $area->kapasitas : 'Unknown';
+        $this->Log_model->simpan($this->session->userdata('id_user'), 'Menghapus Area Parkir: ' . $nama . ' (Kapasitas: ' . $kapasitas . ')');
         redirect('admin/area');
     }
 }
